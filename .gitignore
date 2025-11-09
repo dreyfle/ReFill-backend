@@ -1,0 +1,22 @@
+# Database
+db.sqlite3
+
+# Ignore Python bytecode files
+*.pyc
+*.pyo
+__pycache__/
+
+# Dependency directories
+env/
+venv/
+.env
+node_modules/
+
+# Ignore IDE settings
+.vscode/
+.idea/
+
+# Ignore system files
+.DS_Store
+Thumbs.db
+
