@@ -28,3 +28,6 @@ class Memo(models.Model):
   text = models.TextField(max_length=1000)
   datetime_created = models.DateTimeField(auto_now_add=True)
   datetime_lastupdated = models.DateTimeField(null=True)
+
+  def __str__(self):
+    return self.title
