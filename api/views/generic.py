@@ -1,8 +1,11 @@
-from django.db import models, connection
+from django.db import connection
+from django.utils import timezone
 from django.db.utils import OperationalError
-from rest_framework import status
+from rest_framework import status, viewsets
 from rest_framework.views import APIView
 from rest_framework.response import Response
+from ..models import Memo
+from ..serializers import MemoSerializer
 
 
 class PingView(APIView):
@@ -41,3 +44,18 @@ class PingView(APIView):
         status=status.HTTP_503_SERVICE_UNAVAILABLE  # 503 Service Unavailable
       )
     
+class MemoViewSet(viewsets.ModelViewSet):
+  """
+  Viewset for viewing and editing Memos
+  """
+  # getting all the Memos and it is sorted by its Date/Time Last Updated, where the latest Memo is first 
+  queryset = Memo.objects.all().order_by('-datetime_lastupdated')
+  serializer_class = MemoSerializer
+  def perform_create(self, serializer):
+    instance = serializer.save()
+
+    instance.datetime_lastupdated = instance.datetime_created
+    instance.save(update_fields=['datetime_lastupdated'])
+
+  def perform_update(self, serializer):
+    serializer.save(datetime_lastupdated=timezone.now())

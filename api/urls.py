@@ -1,6 +1,11 @@
-from django.urls import path
-from .views.generic import PingView
+from django.urls import path, include
+from rest_framework.routers import DefaultRouter
+from .views.generic import PingView, MemoViewSet
+
+router = DefaultRouter()
+router.register(r'memos', MemoViewSet, basename='memo')
 
 urlpatterns = [
-  path('', PingView.as_view(), name="ping")
+  path('ping', PingView.as_view(), name="ping"),
+  path('', include(router.urls)),
 ]
