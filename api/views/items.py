@@ -3,15 +3,17 @@ from django_filters.rest_framework import DjangoFilterBackend
 from ..models import Item
 from ..serializers import ItemSerializer
 from ..filters import ItemFilter
+from ..pagination import CustomPageNumberPagination
 
 class ItemViewSet(viewsets.ModelViewSet):
   """
   A single ViewSet for creating, listing, and managing all items,
   including Pens and PenRefills.
   """
-  
+
   serializer_class = ItemSerializer
   queryset = Item.objects.select_related('pen', 'penrefill', 'brand', 'category').all()
+  pagination_class = CustomPageNumberPagination
 
   http_method_names = ['get', 'post', 'patch', 'delete', 'head', 'options']
 
