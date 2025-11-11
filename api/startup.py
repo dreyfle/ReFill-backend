@@ -6,17 +6,9 @@ def create_or_get_category():
   """
 
   from .models import Category
+  from .constants import DEFAULT_CATEGORIES
 
-  DEFAULT_CATEGORIES = [
-    {
-      "name":"Pen",
-      "description":"Writing instruments that use ink to create marks on paper or other surfaces.",
-    },
-    {
-      "name":"Pen Refill",
-      "description":"Replaceable ink cartridges or inserts designed to fit specific pens.",
-    },
-  ]
+  DEFAULT_CATEGORIES = DEFAULT_CATEGORIES
 
   print("Checking for default categories...")
 
