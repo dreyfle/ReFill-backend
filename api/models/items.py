@@ -1,6 +1,5 @@
-from django.db import models, transaction
+from django.db import models
 from .base import Brand, Category
-from .transactions import Transaction
 
 class Item(models.Model):
   id = models.AutoField(primary_key=True)
@@ -20,18 +19,11 @@ class Item(models.Model):
     Helper function:
     Adds stock to this item and creates an 'inbound' transaction log
     """
-    with transaction.atomic():
-      self.quantity += amount
-      self.save(update_fields=['quantity'])
-
-      Transaction.objects.create(
-        item = self,
-        type = 'inbound',
-        quantity_change = amount,
-      )
+    self.quantity += amount
+    self.save(update_fields=['quantity'])
     print(f"SUCCESS LOG: Added {amount} to {self.name}. New quantity: {self.quantity}")
   
-  def remove_stock(self, amount, unit_price=0):
+  def remove_stock(self, amount):
     """
     Helper function:
     Removes stock to this item and creates an 'outbound' transaction log
@@ -39,16 +31,8 @@ class Item(models.Model):
     if self.quantity < amount:
       raise ValueError(f"Not enough stock for {self.name}. Have {self.quantity}, need {amount}")
     
-    with transaction.atomic():
-      self.quantity -= amount
-      self.save(update_fields=['quantity'])
-
-      Transaction.objects.create(
-        item = self,
-        type = 'outbound',
-        quantity_change = amount,
-        unit_price_at_sale = unit_price
-      )
+    self.quantity -= amount
+    self.save(update_fields=['quantity'])
     print(f"SUCCESS LOG: Removed {amount} to {self.name}. New quantity: {self.quantity}")
 
 
