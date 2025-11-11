@@ -1,6 +1,6 @@
 import django_filters
 from .models import Item
-from .constants import CATEGORY_CHOICES, STOCK_CHOICES
+from .constants import CATEGORY_CHOICES, STOCK_CHOICES, TYPE_CHOICES
 
 class ItemFilter(django_filters.FilterSet):
 
@@ -55,3 +55,26 @@ class ItemFilter(django_filters.FilterSet):
     
     # If no choice (or an invalid one) is provided, return all items
     return queryset
+  
+class TransactionFilter(django_filters.FilterSet):
+  TYPE_CHOICES = TYPE_CHOICES
+
+  type = django_filters.ChoiceFilter(
+    choices = TYPE_CHOICES,
+    method='filter_by_type',
+    label='Type'
+  )
+
+  def filter_by_type(self, queryset, name, value):
+    """
+    Custom filter method for the transaction 'type' filter.
+    """
+    if value == 'sale':
+      return queryset.filter(type="sale")
+    elif value == 'restock':
+      return queryset.filter(type="restock")
+    elif value == 'adjustment':
+      return queryset.filter(type="adjustment")
+    else:
+      return queryset
+        

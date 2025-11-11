@@ -18,3 +18,9 @@ STOCK_CHOICES = (
   ('in_stock', 'In Stock'),
   ('out_of_stock', 'Out of Stock'),
 )
+
+TYPE_CHOICES = [
+  ('restock', 'Restock'),
+  ('sale', 'Sale'),
+  ('adjustment', 'Adjustment'),
+]

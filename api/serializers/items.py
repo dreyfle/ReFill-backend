@@ -138,3 +138,8 @@ class ItemSerializer(serializers.ModelSerializer):
     else:
       # Use the base ItemSerializer
       return ItemSerializer(instance).data
+
+class ItemShortSerializer(serializers.ModelSerializer):
+  class Meta:
+    model = Item
+    fields = ['id', 'name', 'description', 'brand', 'category']
