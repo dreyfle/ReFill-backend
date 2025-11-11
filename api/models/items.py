@@ -6,7 +6,7 @@ class Item(models.Model):
   id = models.AutoField(primary_key=True)
   name = models.CharField(max_length=25)
   price = models.DecimalField(max_digits=10, decimal_places=2)
-  description = models.TextField(max_length=200)
+  description = models.TextField(max_length=200, blank=True, null=True)
   quantity = models.IntegerField(default=0)
   target_quantity = models.PositiveIntegerField(default=0)
   brand = models.ForeignKey(Brand, on_delete=models.SET_NULL, null=True)
