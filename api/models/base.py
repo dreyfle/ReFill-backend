@@ -18,6 +18,12 @@ class Category(models.Model):
   name = models.CharField(max_length=25, unique=True)
   description = models.TextField(max_length=200, blank=True, null=True)
 
+  attribute_schema = models.JSONField(
+    default=list,
+    blank=True,
+    help_text="A list of required attribute keys. e.g., ['color', 'tip_size']",
+  )
+
   def __str__(self):
     return self.name
   

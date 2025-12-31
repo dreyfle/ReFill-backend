@@ -1,4 +1,5 @@
 from django.db import models
+from .items import ItemVariant
 
 class Transaction(models.Model):
   """
@@ -14,7 +15,7 @@ class Transaction(models.Model):
   type = models.CharField(max_length=15, choices=TYPE_CHOICES, default='sale')
   datetime_created = models.DateTimeField(auto_now_add=True)
   items = models.ManyToManyField(
-    'Item', 
+    ItemVariant, 
     through='TransactionItem', 
     related_name='transactions'
   )
@@ -32,7 +33,7 @@ class TransactionItem(models.Model):
     related_name = 'line_items'
   )
   item = models.ForeignKey(
-    'Item',
+    ItemVariant,
     on_delete = models.SET_NULL,
     null = True,
     related_name = 'transaction_lines'

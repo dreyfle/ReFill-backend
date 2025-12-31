@@ -1,5 +1,5 @@
 from ..models import Item, Transaction, TransactionItem
-from ..serializers import ItemShortSerializer
+from ..serializers import ItemSerializer
 from rest_framework import serializers
 
 # 1. This new serializer validates one line item (associative model of Transaction)
@@ -33,7 +33,7 @@ class BulkStockUpdateSerializer(serializers.Serializer):
 
 
 class TransactionItemSerializer(serializers.ModelSerializer):
-  item = ItemShortSerializer(read_only=True)
+  item = ItemSerializer(read_only=True)
   
   class Meta:
     model = TransactionItem

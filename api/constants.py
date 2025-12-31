@@ -2,10 +2,12 @@ DEFAULT_CATEGORIES = [
   {
     "name":"Pen",
     "description":"Writing instruments that use ink to create marks on paper or other surfaces.",
+    "attribute_schema": ["color", "tip_size"]
   },
   {
     "name":"Pen Refill",
     "description":"Replaceable ink cartridges or inserts designed to fit specific pens.",
+    "attribute_schema": ["color", "tip_size"]
   },
 ]
 

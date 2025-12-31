@@ -1,5 +1,5 @@
 from .generic import MemoSerializer,CategorySerializer,BrandSerializer
-from .items import ItemSerializer, ItemShortSerializer
+from .items import ItemSerializer, ItemVariantSerializer
 from .transactions import StockUpdateLineItemSerializer,BulkStockUpdateSerializer,TransactionSerializer
 
 __all__ = [
@@ -7,7 +7,7 @@ __all__ = [
   'BrandSerializer',
   'MemoSerializer',
   'ItemSerializer',
-  'ItemShortSerializer',
+  'ItemVariantSerializer',
   'StockUpdateLineItemSerializer',
   'BulkStockUpdateSerializer',
   'TransactionSerializer',

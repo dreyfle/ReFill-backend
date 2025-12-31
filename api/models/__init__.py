@@ -1,6 +1,6 @@
 from .base import Brand, Category, Memo
 from .transactions import Transaction, TransactionItem
-from .items import Item, Pen, PenRefill
+from .items import Item, ItemVariant
 
 __all__ = [
   'Brand',
@@ -9,7 +9,5 @@ __all__ = [
   'Transaction',
   'TransactionItem',
   'Item',
-  # ADD OTHER ITEM CATEGORIES HERE
-  'Pen',
-  'PenRefill'
+  'ItemVariant',
 ]

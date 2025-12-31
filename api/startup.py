@@ -15,7 +15,7 @@ def create_or_get_category():
   for category_data in DEFAULT_CATEGORIES:
     category_obj, created = Category.objects.get_or_create(
       name = category_data["name"],
-      defaults = {"description": category_data["description"]}
+      defaults = {"description": category_data["description"], "attribute_schema": category_data["attribute_schema"]}
     )
 
     if created:

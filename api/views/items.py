@@ -1,11 +1,13 @@
 from django.db import transaction
+from collections import defaultdict
 from rest_framework import viewsets, filters, status
+from rest_framework.decorators import action
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from django_filters.rest_framework import DjangoFilterBackend
-from ..models import Item, Transaction, TransactionItem
-from ..serializers import ItemSerializer, BulkStockUpdateSerializer
-from ..filters import ItemFilter
+from ..models import Item, ItemVariant, Transaction, TransactionItem
+from ..serializers import ItemSerializer, ItemVariantSerializer, BulkStockUpdateSerializer
+from ..filters import ItemVariantFilter
 from ..pagination import CustomPageNumberPagination
 
 class ItemViewSet(viewsets.ModelViewSet):
@@ -14,8 +16,8 @@ class ItemViewSet(viewsets.ModelViewSet):
   including Pens and PenRefills.
   """
 
-  serializer_class = ItemSerializer
-  queryset = Item.objects.select_related('pen', 'penrefill', 'brand', 'category').all()
+  serializer_class = ItemVariantSerializer
+  queryset = ItemVariant.objects.select_related('item', 'item__brand', 'item__category').all()
   pagination_class = CustomPageNumberPagination
 
   http_method_names = ['get', 'post', 'patch', 'delete', 'head', 'options']
@@ -25,15 +27,66 @@ class ItemViewSet(viewsets.ModelViewSet):
     DjangoFilterBackend,       # For filtering (?name=..., etc.)
   ]
 
-  filterset_class = ItemFilter
+  filterset_class = ItemVariantFilter
 
-  ordering_fields = ['name', 'price', 'quantity', 'brand__name', 'category__name']
-  ordering = ['category__name','brand__name','name']
+  ordering_fields = ['item__name', 'price', 'quantity', 'item__brand__name', 'item__category__name']
+  ordering = ['item__name']
 
   def get_serializer_context(self):
     context = super().get_serializer_context()
     context['request'] = self.request
     return context
+  
+  @action(detail=False, methods=['get'])
+  def summary(self, request):
+    """
+    Endpoint: GET /api/items/summary/?path=category_name,brand_name,color
+    """
+    # 1. Get the grouping path from the URL, default to [category, brand, color]
+    path_string = request.query_params.get('path', 'category_name,brand_name,color')
+    group_keys = path_string.split(',')
+
+    # 2. Fetch and serialize data
+    queryset = self.filter_queryset(self.get_queryset())
+    serializer = self.get_serializer(queryset, many=True)
+    flat_data = serializer.data
+
+    # 3. Dynamic Nesting Logic
+    # We use a recursive function to build the tree based on the provided keys
+    result = {}
+
+    for variant in flat_data:
+      self._build_dynamic_tree(result, variant, group_keys)
+
+    return Response(result)
+
+  def _build_dynamic_tree(self, tree, item, keys):
+    """
+    Helper to recursively nest data.
+    """
+    current_key_name = keys[0]
+    
+    # Pull the value from item_details or attributes
+    if current_key_name in item['item_details']:
+      val = item['item_details'][current_key_name]
+    else:
+        # Look in the dynamic JSON attributes
+      val = item['attributes'].get(current_key_name, "N/A")
+
+    # If it's the last key in the path, append the final [id, name] list
+    if len(keys) == 1:
+      if val not in tree:
+        tree[val] = []
+      
+      # Format the name based on what's left
+      # (In this case, just the item name and its specific SKU details)
+      display_name = f"{item['item_details']['name']} ({item['sku']})"
+      tree[val].append(item)
+    else:
+      # Otherwise, keep nesting
+      if val not in tree:
+        tree[val] = {}
+      self._build_dynamic_tree(tree[val], item, keys[1:])
   
 class BulkStockUpdateView(APIView):
   """
