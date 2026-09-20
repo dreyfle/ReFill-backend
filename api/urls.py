@@ -1,11 +1,12 @@
 from django.urls import path, include
 from rest_framework.routers import DefaultRouter
-from .views import PingView, MemoViewSet, BrandViewSet, ItemViewSet, BulkStockUpdateView, TransactionListView
+from .views import PingView, MemoViewSet, BrandViewSet, ItemViewSet, BulkStockUpdateView, TransactionListView, CategoryViewSet
 
 router = DefaultRouter()
 router.register(r'memos', MemoViewSet, basename='memo')
 router.register(r'brands', BrandViewSet, basename='brand')
 router.register(r'items', ItemViewSet, basename='item')
+router.register(r'categories', CategoryViewSet, basename='category')
 
 urlpatterns = [
   path('ping', PingView.as_view(), name="ping"),

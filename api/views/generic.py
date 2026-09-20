@@ -2,8 +2,8 @@ from django.utils import timezone
 from rest_framework import status, viewsets
 from rest_framework.views import APIView
 from rest_framework.response import Response
-from ..models import Memo, Brand
-from ..serializers import MemoSerializer, BrandSerializer
+from ..models import Memo, Brand, Category
+from ..serializers import MemoSerializer, BrandSerializer, CategorySerializer
 
 
 class PingView(APIView):
@@ -18,10 +18,17 @@ class PingView(APIView):
       status=status.HTTP_200_OK
     )
 
+class CategoryViewSet(viewsets.ModelViewSet):
+  """
+  Viewset for viewing (and editing) Categories
+  """
+  serializer_class = CategorySerializer
+  queryset = Category.objects.all().order_by('name')
+
 
 class BrandViewSet(viewsets.ModelViewSet):
   """
-  Viewset for viewing and editing Memos
+  Viewset for viewing and editing Brands
   """
   serializer_class = BrandSerializer
   queryset = Brand.objects.all().order_by('name')
